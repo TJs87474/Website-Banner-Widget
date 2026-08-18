@@ -3,102 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Increase Banner</title>
+    <title>Sale Countdown Banner</title>
     <style>
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #e9ecef; color: #212529; overflow: hidden; }
-        .banner { display: flex; align-items: center; justify-content: space-between; height: 70px; padding: 0 20px; box-sizing: border-box; font-size: 15px; }
-        .content-left { display: flex; align-items: center; gap: 25px; flex-grow: 1; }
-        .text { font-weight: normal; color: #333; }
-        .text strong { font-weight: 700; color: #000; }
+        /* 1. Base Document Styles */
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background: #e3ebf3; 
+            color: #1c2d3d; 
+            overflow-x: hidden; /* Prevents unwanted horizontal scrolling */
+        }
         
-        /* Timer Styles */
-        .timer-container { display: flex; align-items: center; gap: 4px; }
-        .time-group { display: flex; flex-direction: column; align-items: center; min-width: 32px; }
-        .time-box { background: #2b7a99; color: white; font-weight: bold; font-size: 16px; padding: 4px 6px; border-radius: 3px; min-width: 22px; text-align: center; font-variant-numeric: tabular-nums; }
-        .label { font-size: 9px; color: #666; margin-top: 3px; text-transform: capitalize; }
-        .separator { font-weight: bold; color: #2b7a99; font-size: 16px; margin-bottom: 14px; }
+        /* 2. Desktop Layout: Centered with controlled gaps */
+        .banner { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 32px; /* Controlled spacing between text, timer, and button */
+            min-height: 60px; 
+            padding: 10px 40px; 
+            box-sizing: border-box; 
+            position: relative;
+            width: 100%;
+        }
         
-        /* Button & Close Styles */
-        .right-actions { display: flex; align-items: center; gap: 20px; }
-        .btn { background: #1e6b8a; color: white; text-decoration: none; padding: 10px 24px; border-radius: 20px; font-weight: bold; font-size: 14px; border: none; cursor: pointer; transition: background 0.2s; }
-        .btn:hover { background: #154d64; }
-        .close-btn { color: #666; cursor: pointer; font-size: 18px; user-select: none; font-weight: light; line-height: 1; }
-        .close-btn:hover { color: #000; }
-
-        @media (max-width: 768px) {
-            .banner { flex-direction: column; height: auto; padding: 12px; gap: 10px; text-align: center; }
-            .content-left { flex-direction: column; gap: 10px; }
-            .right-actions { width: 100%; justify-content: center; position: relative; }
-            .close-btn { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
-            .separator { margin-bottom: 12px; }
+        .text { 
+            font-size: 14px; 
+            white-space: nowrap;
+        }
+        .text strong { font-weight: 700; }
+        
+        /* 3. Timer Component Spacing */
+        .timer-container { display: flex; align-items: center; gap: 6px; }
+        .time-group { display: flex; flex-direction: column; align-items: center; }
+        .time-box { background: #3282b8; color: white; font-size: 16px; font-weight: 700; padding: 4px 8px; border-radius: 4px; min-width: 24px; text-align: center; font-variant-numeric: tabular-nums; }
+        .label { font-size: 9px; color: #5a738e; margin-top: 3px; font-weight: 500; text-transform: capitalize; }
+        .colon { color: #3282b8; font-weight: 700; font-size: 16px; margin-bottom: 14px; padding: 0 1px; }
+    
+        /* 4. Action Button Styling */
+        .cta-btn { 
+            background: #2471a3; 
+            color: white; 
+            text-decoration: none; 
+            padding: 10px 24px; 
+            border-radius: 20px; 
+            font-size: 13px; 
+            font-weight: 700;
+            line-height: 1;
+            transition: background 0.2s; 
+            white-space: nowrap; 
+        }
+        .cta-btn:hover { background: #1a5276; }
+        
+        /* 5. Close Icon Placement */
+        .close-btn { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 16px; color: #5a738e; cursor: pointer; padding: 5px; }
+    
+        /* 6. Mobile Layout (Triggers on tablet/phone screen widths) */
+        @media (max-width: 850px) {
+            .banner { 
+                height: auto; 
+                padding: 15px 45px 15px 20px; /* Leaves room for the close button */
+                flex-direction: column;       /* Stacks text, timer, and button vertically */
+                gap: 12px;                    /* Cleaner vertical layout gaps */
+            }
+            .text { 
+                width: 100%; 
+                text-align: center; 
+                white-space: normal;          /* Allows text to break lines cleanly if on a narrow screen */
+            }
+            .close-btn {
+                top: 20px;                    /* Keeps close button pinned at the top right of the stacked banner */
+                transform: none;
+            }
         }
     </style>
+    
+    
 </head>
 <body>
 
-    <div class="banner" id="promo-banner">
-        <div class="content-left">
-            <div class="text" id="banner-text">Hurry — <strong>Knight's Retribution badge prices increase on 8/31</strong></div>
-            
-            <div class="timer-container" id="timer">
-                <div class="time-group">
-                    <div class="time-box" id="days">15</div>
-                    <div class="label">Days</div>
-                </div>
-                <div class="separator">:</div>
-                <div class="time-group">
-                    <div class="time-box" id="hours">06</div>
-                    <div class="label">Hours</div>
-                </div>
-                <div class="separator">:</div>
-                <div class="time-group">
-                    <div class="time-box" id="minutes">16</div>
-                    <div class="label">Minutes</div>
-                </div>
-                <div class="separator">:</div>
-                <div class="time-group">
-                    <div class="time-box" id="seconds">34</div>
-                    <div class="label">Seconds</div>
-                </div>
-            </div>
+    <div class="banner" id="saleBanner">
+        <div class="text">Hurry — <strong>Knight's Retribution badge prices increase on 8/31</strong></div>
+        
+        <div class="timer-container" id="countdown">
+            <div class="time-group"><div class="time-box" id="days">00</div><div class="label">Days</div></div>
+            <div class="colon">:</div>
+            <div class="time-group"><div class="time-box" id="hours">00</div><div class="label">Hours</div></div>
+            <div class="colon">:</div>
+            <div class="time-group"><div class="time-box" id="minutes">00</div><div class="label">Minutes</div></div>
+            <div class="colon">:</div>
+            <div class="time-group"><div class="time-box" id="seconds">00</div><div class="label">Seconds</div></div>
         </div>
 
-        <div class="right-actions">
-            <button class="btn" onclick="window.top.location.href='https://yourwebsite.com'">Secure your spot</button>
-            <div class="close-btn" onclick="closeBanner()">✕</div>
-        </div>
+        <a href="#" target="_parent" class="cta-btn">Secure your spot</a>
+        <button class="close-btn" onclick="closeBanner()">✕</button>
     </div>
 
     <script>
-        // Set target expiration date (August 31, 2026)
         const targetDate = new Date("August 31, 2026 23:59:59").getTime();
 
-        const countdown = setInterval(() => {
+        setInterval(() => {
             const now = new Date().getTime();
-            const distance = targetDate - now;
+            const difference = targetDate - now;
+            if (difference <= 0) return;
 
-            if (distance < 0) {
-                clearInterval(countdown);
-                document.getElementById("banner-text").innerHTML = "<strong>Price increase is now active!</strong>";
-                document.getElementById("timer").style.display = "none";
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("days").innerText = String(days).padStart(2, '0');
-            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
-            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
-            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            document.getElementById("days").innerText = String(Math.floor(difference / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            document.getElementById("hours").innerText = String(Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(Math.floor((difference % (1000 * 60)) / 1000)).padStart(2, '0');
         }, 1000);
 
-        // Tell parent window to hide the iframe container when clicked
         function closeBanner() {
-            window.parent.postMessage('close-banner', '*');
+            window.parent.postMessage({ type: 'hide-sale-banner' }, '*');
         }
+
+        // NEW: Measure layout height and report to parent page
+        function sendHeight() {
+            const height = document.getElementById('saleBanner').offsetHeight;
+            window.parent.postMessage({ type: 'resize-sale-banner', height: height }, '*');
+        }
+
+        window.addEventListener('load', sendHeight);
+        window.addEventListener('resize', sendHeight);
+        // Re-send height briefly after load to ensure accurate measurements
+        setTimeout(sendHeight, 200); 
     </script>
 </body>
 </html>
