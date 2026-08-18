@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Preview Page</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #ffffff; 
+            font-family: system-ui, sans-serif;
+        }
+        
+        /* The structural frame holding your banner */
+        #countdown-banner-wrap { 
+            width: 100%; 
+            height: 60px; /* Default height */
+            transition: height 0.2s ease; /* Smooth closing transition */
+            overflow: hidden; 
+            background: #e3ebf3; 
+        }
+        #countdown-banner-wrap iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            display: block; 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Embedded Banner Layer -->
+    <div id="countdown-banner-wrap">
+        <iframe 
+            src="banner.html" 
+            title="Sale Countdown Banner"
+            sandbox="allow-scripts allow-same-origin">
+        </iframe>
+    </div>
+
+    <script>
+        // Listens to the inner iframe to auto-resize height or hide completely
+        window.addEventListener('message', function(event) {
+            if (!event.data || typeof event.data !== 'object') return;
+            
+            const container = document.getElementById('countdown-banner-wrap');
+            if (!container) return;
+
+            // Adjust height if mobile text wraps onto multiple lines
+            if (event.data.type === 'resize-sale-banner') {
+                container.style.height = event.data.height + 'px';
+            }
+            
+            // Slide up and delete the frame when the user clicks '✕'
+            if (event.data.type === 'hide-sale-banner') {
+                container.style.height = '0px';
+                setTimeout(() => container.remove(), 200);
+            }
+        });
+    </script>
+
+<p> This is how your countdown banner should look. To use it, please follow the instructions on the read me file <a href="https://github.com/TJs87474/Website-Banner-Widget/blob/main/README.md">here</a> </p>
+</body>
+</html>
